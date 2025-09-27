@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aule libere</title>
+</head>
+<body>
+  <h2>Controlla aule libere</h2>
+
+  <label>Data: <input type="date" id="data"></label><br><br>
+  <label>Ora inizio: <input type="time" id="from"></label><br><br>
+  <label>Ora fine: <input type="time" id="to"></label><br><br>
+  <button onclick="cerca()">Cerca aule</button>
+
+  <h3>Risultato:</h3>
+  <ul id="aule"></ul>
+
+  <script>
+    async function cerca() {
+      const data = document.getElementById("data").value;
+      const from = document.getElementById("from").value + ":00";
+      const to = document.getElementById("to").value + ":00";
+
+      if (!data || !from || !to) {
+        alert("Inserisci tutti i campi");
+        return;
+      }
+
+      try {
+        const res = await fetch(`/api/aule?data=${data}&from_time=${from}&to_time=${to}`);
+        const json = await res.json();
+        const ul = document.getElementById("aule");
+        ul.innerHTML = "";
+
+        if (json.error) {
+          ul.innerHTML = `<li style="color:red">Errore: ${json.error}</li>`;
+          return;
+        }
+
+        if (!json.libere.length) {
+          ul.innerHTML = "<li>Nessuna aula libera trovata</li>";
+          return;
+        }
+
+        json.libere.forEach(aula => {
+          const li = document.createElement("li");
+          li.textContent = aula;
+          ul.appendChild(li);
+        });
+      } catch (err) {
+        alert("Errore nella richiesta: " + err.message);
+      }
+    }
+  </script>
+</body>
+</html>
