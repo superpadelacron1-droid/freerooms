@@ -4,17 +4,145 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Aule libere</title>
+  <style>
+    body {
+      font-family: "Poppins", sans-serif;
+      background: #f4f6f9;
+      margin: 0;
+      padding: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      min-height: 100vh;
+    }
+
+    .container {
+      background: white;
+      padding: 20px 25px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+      max-width: 400px;
+      width: 100%;
+    }
+
+    h2 {
+      text-align: center;
+      color: #1a3d7c;
+      margin-bottom: 20px;
+      font-size: 1.5rem;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 12px;
+      color: #333;
+      font-weight: 500;
+    }
+
+    input[type="date"],
+    input[type="time"] {
+      width: 100%;
+      padding: 10px;
+      font-size: 15px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      margin-top: 4px;
+      box-sizing: border-box;
+    }
+
+    button {
+      width: 100%;
+      padding: 12px;
+      margin-top: 10px;
+      background: #1a3d7c;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+    }
+
+    button:hover {
+      background: #254fa6;
+    }
+
+    button:active {
+      transform: scale(0.98);
+    }
+
+    h3 {
+      margin-top: 20px;
+      color: #1a3d7c;
+      font-size: 1.2rem;
+      border-bottom: 2px solid #1a3d7c;
+      padding-bottom: 5px;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+      margin-top: 10px;
+    }
+
+    li {
+      background: #eef2f7;
+      padding: 10px 12px;
+      border-radius: 6px;
+      margin-bottom: 8px;
+      font-size: 15px;
+      color: #1a3d7c;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    li:nth-child(odd) {
+      background: #e2e8f0;
+    }
+
+    li.error {
+      color: red;
+      background: #ffeaea;
+      border-left: 4px solid red;
+    }
+
+    @media (max-width: 480px) {
+      .container {
+        padding: 15px;
+      }
+
+      h2 {
+        font-size: 1.3rem;
+      }
+    }
+  </style>
 </head>
 <body>
-  <h2>Controlla aule libere</h2>
+  <div class="container">
+    <h2>Controlla aule libere</h2>
 
-  <label>Data: <input type="date" id="data"></label><br><br>
-  <label>Ora inizio: <input type="time" id="from"></label><br><br>
-  <label>Ora fine: <input type="time" id="to"></label><br><br>
-  <button onclick="cerca()">Cerca aule</button>
+    <label>
+      Data:
+      <input type="date" id="data">
+    </label>
 
-  <h3>Risultato:</h3>
-  <ul id="aule"></ul>
+    <label>
+      Ora inizio:
+      <input type="time" id="from">
+    </label>
+
+    <label>
+      Ora fine:
+      <input type="time" id="to">
+    </label>
+
+    <button onclick="cerca()">Cerca aule</button>
+
+    <h3>Risultato</h3>
+    <ul id="aule"></ul>
+  </div>
 
   <script>
     async function cerca() {
@@ -34,11 +162,11 @@
         ul.innerHTML = "";
 
         if (json.error) {
-          ul.innerHTML = `<li style="color:red">Errore: ${json.error}</li>`;
+          ul.innerHTML = `<li class="error">Errore: ${json.error}</li>`;
           return;
         }
 
-        if (!json.libere.length) {
+        if (!json.libere || !json.libere.length) {
           ul.innerHTML = "<li>Nessuna aula libera trovata</li>";
           return;
         }
